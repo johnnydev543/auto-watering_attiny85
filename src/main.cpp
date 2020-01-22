@@ -5,10 +5,12 @@ const int floatSwtichPin = 2;  // should have 10k pull-up resistor
 const int moistureReadPin = 1; // should have 10k pull-up resistor
 const int moistureOnPin = 0;   // should have 10k pull-down resistor
 const int waterPumpPin = 3;    // should have current limiting resistor, pull-down resistor
-int checkInterval = 15;        // moisture check interval, seconds
+
+int checkInterval = 30;        // moisture check interval, seconds
 int checkCount = 0;
-int forceStopSec = 120;  // seconds
-uint32_t snoreDuration = 16; // seconds
+int forceStopSec = 120;             // seconds
+
+uint32_t snoreDuration = 86400 * 1000; // milli seconds
 
 void setup()
 {
@@ -81,6 +83,6 @@ void loop()
         checkCount = 0;
 
         // into deep sleep mode
-        snore(snoreDuration * 1000);
+        snore(snoreDuration);
     }
 }
