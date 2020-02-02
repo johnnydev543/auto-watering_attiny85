@@ -1,16 +1,20 @@
 #include <Arduino.h>
 #include <tinysnore.h> // Include TinySnore Library
 
-const int floatSwtichPin = 2;  // should have 10k pull-up resistor
-const int moistureReadPin = 1; // should have 10k pull-up resistor
-const int moistureOnPin = 0;   // should have 10k pull-down resistor
-const int waterPumpPin = 3;    // should have current limiting resistor, pull-down resistor
+const int floatSwtichPin = PB2;  // should have 10k pull-up resistor
+const int moistureReadPin = PB1; // should have 10k pull-up resistor
+const int moistureOnPin = PB0;   // should have 10k pull-down resistor
+const int waterPumpPin = PB3;    // should have current limiting resistor, pull-down resistor
+const int snoreDurationPin = A2; // should have a 10K VR connect to A2(PB4)
 
-int checkInterval = 30;        // moisture check interval, seconds
+int checkInterval = 30; // moisture check interval, seconds
 int checkCount = 0;
-int forceStopSec = 120;             // seconds
+int forceStopSec = 120; // seconds
 
-uint32_t snoreDuration = 86400 * 1000; // milli seconds
+long analogVal = 0;
+
+// snore duration, here to specify a default value, actually control by a VR
+uint32_t snoreDuration = 86400 * 1000;
 
 void setup()
 {
@@ -81,6 +85,13 @@ void loop()
 
         // reset check counter
         checkCount = 0;
+
+        analogVal = analogRead(snoreDurationPin);
+
+        // transform the value ranging from 1 hour(3600 seconds) to 24 hours(86400 seconds)
+        analogVal = map(analogVal, 1, 1023, 3600, 86400);
+
+        snoreDuration = analogVal * 1000; // milli seconds
 
         // into deep sleep mode
         snore(snoreDuration);
