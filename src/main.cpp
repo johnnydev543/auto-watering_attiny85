@@ -45,6 +45,8 @@ void loop()
         // read soil moisture value
         int moistureRead = digitalRead(moistureReadPin);
 
+        delay(20);
+
         // Power off moisture sensor
         digitalWrite(moistureOnPin, LOW);
 
