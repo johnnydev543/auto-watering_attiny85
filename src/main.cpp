@@ -14,7 +14,10 @@ int forceStopSec = 120; // seconds
 long analogVal = 0;
 
 // snore duration, here to specify a default value, actually control by a VR
-uint32_t snoreDuration = 86400 * 1000;
+long snoreDurationMin = 3600;
+long snoreDurationMax = 86400;
+
+uint32_t snoreDuration;
 
 void setup()
 {
@@ -91,7 +94,7 @@ void loop()
         analogVal = analogRead(snoreDurationPin);
 
         // transform the value ranging from 1 hour(3600 seconds) to 24 hours(86400 seconds)
-        analogVal = map(analogVal, 1, 1023, 3600, 86400);
+        analogVal = map(analogVal, 1, 1023, snoreDurationMin, snoreDurationMax);
 
         snoreDuration = analogVal * 1000; // milli seconds
 
