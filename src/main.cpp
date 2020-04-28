@@ -1,23 +1,25 @@
 #include <Arduino.h>
 #include <tinysnore.h> // Include TinySnore Library
 
-const int floatSwtichPin = PB2;  // should have 10k pull-up resistor
-const int moistureReadPin = PB1; // should have 10k pull-up resistor
-const int moistureOnPin = PB0;   // should have 10k pull-down resistor
-const int waterPumpPin = PB3;    // should have current limiting resistor, pull-down resistor
-const int snoreDurationPin = A2; // should have a 10K VR connect to A2(PB4)
+const int floatSwtichPin = PB2;     // should have 10k pull-up resistor
+const int moistureReadPin = PB1;    // should have 10k pull-up resistor
+const int moistureOnPin = PB0;      // should have 10k pull-down resistor
+const int waterPumpPin = PB3;       // should have current limiting resistor, pull-down resistor
+const int wateringDurationPin = A2; // should have a 10K VR connect to A2(PB4)
 
 int checkInterval = 30; // moisture check interval, seconds
 int checkCount = 0;
-int forceStopSec = 120; // seconds
 
 long analogVal = 0;
 
-// snore duration, here to specify a default value, actually control by a VR
-long snoreDurationMin = 3600;
-long snoreDurationMax = 86400;
+// watering duration, controlled by a VR from min to max
+// Unit: seconds
+int wateringDuration = 120;
+int wateringDurationMin = 60;
+int wateringDurationMax = 240;
+int forceStopSec = 300;
 
-uint32_t snoreDuration;
+uint32_t snoreDuration = 86400 * 1000; // milli seconds
 
 void setup()
 {
@@ -56,6 +58,9 @@ void loop()
         if (moistureRead == HIGH)
         {
             needWatering = true;
+
+            analogVal = analogRead(wateringDurationPin);
+            wateringDuration = map(analogVal, 1, 1023, wateringDurationMin, wateringDurationMax);
         }
     }
     else
@@ -65,7 +70,8 @@ void loop()
 
     // force stop if watering time is more than X seconds
     // in case the moisture sensor or something else out of control.
-    if (checkInterval * checkCount >= forceStopSec)
+    int checkDuration = checkInterval * checkCount;
+    if (checkDuration >= forceStopSec || checkDuration >= wateringDuration)
     {
         // Force stop watering
         needWatering = false;
@@ -90,13 +96,6 @@ void loop()
 
         // reset check counter
         checkCount = 0;
-
-        analogVal = analogRead(snoreDurationPin);
-
-        // transform the value ranging from 1 hour(3600 seconds) to 24 hours(86400 seconds)
-        analogVal = map(analogVal, 1, 1023, snoreDurationMin, snoreDurationMax);
-
-        snoreDuration = analogVal * 1000; // milli seconds
 
         // into deep sleep mode
         snore(snoreDuration);
