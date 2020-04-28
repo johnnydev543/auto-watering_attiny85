@@ -45,12 +45,12 @@ void loop()
         digitalWrite(moistureOnPin, HIGH);
 
         // milli seconds, make sure the sensor will have time to turn on
-        delay(20);
+        delay(40);
 
         // read soil moisture value
         int moistureRead = digitalRead(moistureReadPin);
 
-        delay(20);
+        delay(40);
 
         // Power off moisture sensor
         digitalWrite(moistureOnPin, LOW);
