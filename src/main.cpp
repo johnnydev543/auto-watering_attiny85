@@ -23,7 +23,7 @@ uint32_t snoreDuration = 86400 * 1000; // milli seconds
 
 void setup()
 {
-    pinMode(floatSwtichPin, INPUT_PULLUP);
+    pinMode(floatSwtichPin, INPUT);
     pinMode(moistureReadPin, INPUT);
     pinMode(moistureOnPin, OUTPUT);
     pinMode(waterPumpPin, OUTPUT);
@@ -31,10 +31,10 @@ void setup()
 
 void loop()
 {
-    bool needWatering = false;
+    int needWatering = false;
 
     // Read the water level switch to see if water is avaiable
-    bool floatSwitch = digitalRead(floatSwtichPin);
+    int floatSwitch = digitalRead(floatSwtichPin);
 
     // float switch == low means has water
     if (floatSwitch == LOW)
@@ -60,7 +60,7 @@ void loop()
             needWatering = true;
 
             analogVal = analogRead(wateringDurationPin);
-            wateringDuration = map(analogVal, 1, 1023, wateringDurationMin, wateringDurationMax);
+            wateringDuration = map(analogVal, 0, 1023, wateringDurationMin, wateringDurationMax);
         }
     }
     else
