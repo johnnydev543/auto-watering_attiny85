@@ -8,7 +8,7 @@ const int floatSwtichPin = PB2;     // should have 10k pull-up resistor
 const int moistureReadPin = PB1;    // should have 10k pull-up resistor
 const int moistureOnPin = PB0;      // should have 10k pull-down resistor
 const int waterPumpPin = PB3;       // should have current limiting resistor, pull-down resistor
-const int wateringDurationPin = PB0; // should have a 10K VR connect to A2(PB4)
+const int wateringDurationPin = A2; // should have a 10K VR connect to A2(PB4)
 
 int checkInterval = 30; // moisture check interval, seconds
 int checkCount = 0;
