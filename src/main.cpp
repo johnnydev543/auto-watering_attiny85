@@ -31,6 +31,10 @@ void setup()
     pinMode(moistureReadPin, INPUT);
     pinMode(moistureOnPin, OUTPUT);
     pinMode(waterPumpPin, OUTPUT);
+
+    // read watering duration from VR
+    analogVal = analogRead(wateringDurationPin);
+    wateringDuration = map(analogVal, 0, 1023, wateringDurationMin, wateringDurationMax);
 }
 
 void loop()
@@ -62,9 +66,6 @@ void loop()
         if (moistureRead == HIGH)
         {
             needWatering = true;
-
-            analogVal = analogRead(wateringDurationPin);
-            wateringDuration = map(analogVal, 0, 1023, wateringDurationMin, wateringDurationMax);
         }
     }
     else
