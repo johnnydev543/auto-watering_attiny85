@@ -1,11 +1,14 @@
 #include <Arduino.h>
-#include <tinysnore.h> // Include TinySnore Library
+#include <SimpleSleep.h>
+
+SimpleSleep Sleep;
+SimpleSleep_Cal SleepCal;
 
 const int floatSwtichPin = PB2;     // should have 10k pull-up resistor
 const int moistureReadPin = PB1;    // should have 10k pull-up resistor
 const int moistureOnPin = PB0;      // should have 10k pull-down resistor
 const int waterPumpPin = PB3;       // should have current limiting resistor, pull-down resistor
-const int wateringDurationPin = A2; // should have a 10K VR connect to A2(PB4)
+const int wateringDurationPin = PB0; // should have a 10K VR connect to A2(PB4)
 
 int checkInterval = 30; // moisture check interval, seconds
 int checkCount = 0;
@@ -23,6 +26,7 @@ uint32_t snoreDuration = 86400 * 1000; // milli seconds
 
 void setup()
 {
+    SleepCal = Sleep.getCalibration();
     pinMode(floatSwtichPin, INPUT);
     pinMode(moistureReadPin, INPUT);
     pinMode(moistureOnPin, OUTPUT);
@@ -98,6 +102,6 @@ void loop()
         checkCount = 0;
 
         // into deep sleep mode
-        snore(snoreDuration);
+        Sleep.deeplyFor(snoreDuration, SleepCal);
     }
 }
