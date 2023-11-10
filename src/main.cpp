@@ -10,17 +10,18 @@ const int moistureOnPin = PB0;      // should have 10k pull-down resistor
 const int waterPumpPin = PB3;       // should have current limiting resistor, pull-down resistor
 const int wateringDurationPin = A2; // should have a 10K VR connect to A2(PB4)
 
-int checkInterval = 30; // moisture check interval, seconds
 int checkCount = 0;
 
 long analogVal = 0;
 
 // watering duration, controlled by a VR from min to max
 // Unit: seconds
-int wateringDuration = 120;
-int wateringDurationMin = 60;
-int wateringDurationMax = 240;
-int forceStopSec = 300;
+int wateringDuration = 30;
+int wateringDurationMin = 10;
+int wateringDurationMax = 60;
+int forceStopSec = 120;
+
+int checkInterval = 10;
 
 uint32_t snoreDuration = 86400 * 1000; // milli seconds
 
@@ -35,6 +36,10 @@ void setup()
     // read watering duration from VR
     analogVal = analogRead(wateringDurationPin);
     wateringDuration = map(analogVal, 0, 1023, wateringDurationMin, wateringDurationMax);
+    if (wateringDurationMin >= checkInterval)
+    {
+        checkInterval = wateringDurationMin / 2; // moisture check interval, seconds
+    }
 }
 
 void loop()
@@ -53,12 +58,12 @@ void loop()
         digitalWrite(moistureOnPin, HIGH);
 
         // milli seconds, make sure the sensor will have time to turn on
-        delay(40);
+        delay(100);
 
         // read soil moisture value
         int moistureRead = digitalRead(moistureReadPin);
 
-        delay(40);
+        delay(100);
 
         // Power off moisture sensor
         digitalWrite(moistureOnPin, LOW);
