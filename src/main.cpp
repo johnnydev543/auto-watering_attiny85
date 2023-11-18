@@ -23,7 +23,7 @@ int forceStopSec = 120;
 
 int checkInterval = 10;
 
-uint32_t snoreDuration = 86400 * 1000; // milli seconds
+uint32_t snoreDuration = 28800000U; // milli seconds
 
 void setup()
 {
